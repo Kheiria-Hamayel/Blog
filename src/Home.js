@@ -1,26 +1,45 @@
 import { useEffect, useState } from "react";
 import BlogList from "./BlogList";
+import useFetch from "./useFetch";
 
 export default function Home() {
-  const [blogs, setBlogs] = useState(null);
-  const [isPending, setIsPending] = useState(true);
-  //can't use the async and await in useEffect instead
-  // create external method or using promise
-  useEffect(() => {
-    fetch("http://localhost:8000/blogs")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        // console.log(data);
-        setBlogs(data);
-        setIsPending(false);
-      });
-  }, []);
-  //[] means that useEffect is triggered only in initializing
+  const {
+    data: blogs,
+    isPending,
+    error,
+  } = useFetch("http://localhost:8000/blogs");
+
+  // const [blogs, setBlogs] = useState(null);
+  // const [isPending, setIsPending] = useState(true);
+  // const [error, setError] = useState(null);
+  // //can't use the async and await in useEffect instead
+  // // create external method or using promise
+  // useEffect(() => {
+  //   fetch("http://localhost:8000/blogs")
+  //     .then((res) => {
+  //       // console.log(res);
+  //       if (!res.ok) {
+  //         throw Error("Could not fetch data from resource");
+  //       }
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       // console.log(data);
+  //       setBlogs(data);
+  //       setIsPending(false);
+  //       setError(null);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e.message);
+  //       setError(e.message);
+  //       setIsPending(false);
+  //     });
+  // }, []);
+  // //[] means that useEffect is triggered only in initializing
 
   return (
     <div className="home">
+      {error && <div>{error}</div>}
       {isPending && <div> Loading ...</div>}
       {blogs && <BlogList blogs={blogs} title="All Blogs" />}
     </div>
